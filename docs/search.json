@@ -1,0 +1,268 @@
+[
+  {
+    "objectID": "tsa_ayesheep_milindra.html#introduction",
+    "href": "tsa_ayesheep_milindra.html#introduction",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Introduction",
+    "text": "Introduction\n\n\nForecast the GDP in USA by using Unemployment rate data and Leading Indicators of GDP data, and analyzing the relationship between GDP and Unemployment rate."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#dataset-overview",
+    "href": "tsa_ayesheep_milindra.html#dataset-overview",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\n\nThe Leading Indicators OECD dataset provides a normalized GDP series for the United States, which is useful for analyzing trends and forecasting future economic conditions.\nThe unemployment rate is another critical economic indicator that measures the percentage of the labor force that is unemployed and actively seeking employment."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#leading-indicators-oecd-reference-series-gross-domestic-product-gdp",
+    "href": "tsa_ayesheep_milindra.html#leading-indicators-oecd-reference-series-gross-domestic-product-gdp",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Leading Indicators OECD: Reference Series: Gross Domestic Product (GDP)",
+    "text": "Leading Indicators OECD: Reference Series: Gross Domestic Product (GDP)\n\n\n\nGDP Data (First 3 Rows)\n\n\n\nDate\nSeries ID\nValue\nRealtime Start\nRealtime End\n\n\n\n\n1\n1955-01-01\nUSALORSGPNOSTSAM\nNA\n2024-03-12\n2024-03-12\n\n\n2\n1955-02-01\nUSALORSGPNOSTSAM\nNA\n2024-03-12\n2024-03-12\n\n\n3\n1955-03-01\nUSALORSGPNOSTSAM\nNA\n2024-03-12\n2024-03-12"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unemployment-rate-unrate",
+    "href": "tsa_ayesheep_milindra.html#unemployment-rate-unrate",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Unemployment Rate (UNRATE)",
+    "text": "Unemployment Rate (UNRATE)\n\n\n\nUnemployment Data (First 3 Rows)\n\n\n\nDate\nSeries ID\nValue\nRealtime Start\nRealtime End\n\n\n\n\n1\n1948-01-01\nUNRATE\n3.4\n2024-03-12\n2024-03-12\n\n\n2\n1948-02-01\nUNRATE\n3.8\n2024-03-12\n2024-03-12\n\n\n3\n1948-03-01\nUNRATE\n4.0\n2024-03-12\n2024-03-12"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#data-filtering",
+    "href": "tsa_ayesheep_milindra.html#data-filtering",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Data Filtering",
+    "text": "Data Filtering\nWe see that the time period for both datasets is not overlapping. We can overlap the time period by taking a subset of data from each series, with common start and end date.\n\n\n# A tibble: 3 × 5\n  date       series_id        value realtime_start realtime_end\n  &lt;date&gt;     &lt;chr&gt;            &lt;dbl&gt; &lt;date&gt;         &lt;date&gt;      \n1 1960-01-01 USALORSGPNOSTSAM  101. 2024-03-12     2024-03-12  \n2 1960-02-01 USALORSGPNOSTSAM  101. 2024-03-12     2024-03-12  \n3 1960-03-01 USALORSGPNOSTSAM  101. 2024-03-12     2024-03-12  \n\n\n# A tibble: 3 × 5\n  date       series_id        value realtime_start realtime_end\n  &lt;date&gt;     &lt;chr&gt;            &lt;dbl&gt; &lt;date&gt;         &lt;date&gt;      \n1 2023-06-01 USALORSGPNOSTSAM  100. 2024-03-12     2024-03-12  \n2 2023-07-01 USALORSGPNOSTSAM  100. 2024-03-12     2024-03-12  \n3 2023-08-01 USALORSGPNOSTSAM  100. 2024-03-12     2024-03-12"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#data-filtering-1",
+    "href": "tsa_ayesheep_milindra.html#data-filtering-1",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Data Filtering",
+    "text": "Data Filtering\n\n\n# A tibble: 3 × 5\n  date       series_id value realtime_start realtime_end\n  &lt;date&gt;     &lt;chr&gt;     &lt;dbl&gt; &lt;date&gt;         &lt;date&gt;      \n1 1960-01-01 UNRATE      5.2 2024-03-12     2024-03-12  \n2 1960-02-01 UNRATE      4.8 2024-03-12     2024-03-12  \n3 1960-03-01 UNRATE      5.4 2024-03-12     2024-03-12  \n\n\n# A tibble: 3 × 5\n  date       series_id value realtime_start realtime_end\n  &lt;date&gt;     &lt;chr&gt;     &lt;dbl&gt; &lt;date&gt;         &lt;date&gt;      \n1 2023-06-01 UNRATE      3.6 2024-03-12     2024-03-12  \n2 2023-07-01 UNRATE      3.5 2024-03-12     2024-03-12  \n3 2023-08-01 UNRATE      3.8 2024-03-12     2024-03-12"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#data-visualization",
+    "href": "tsa_ayesheep_milindra.html#data-visualization",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Data Visualization",
+    "text": "Data Visualization\nLet’s see a plot of the Lead Indicators of GDP dataset, to know how the value is changing with time:\n\nGDP Data"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#data-visualization-1",
+    "href": "tsa_ayesheep_milindra.html#data-visualization-1",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Data Visualization",
+    "text": "Data Visualization\nSimilarly, let’s see a similar plot of the Unemployment rate:"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#correlation-analysis",
+    "href": "tsa_ayesheep_milindra.html#correlation-analysis",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Correlation Analysis",
+    "text": "Correlation Analysis\n\nCorrelation between Gross Domestic Product (GDP) and the Unemployment Rate to gain insights into economic dynamics of how the changes in unemployment impacts the GDP.\nTwo evaluation metrics: Correlation coefficient and Cross-Correlation Function (CCF) plot\n\n\n\nThe correlation value obtained is: -0.5799007"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#correlation-analysis-1",
+    "href": "tsa_ayesheep_milindra.html#correlation-analysis-1",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Correlation Analysis",
+    "text": "Correlation Analysis\n\nThe correlation coefficient between GDP and the Unemployment Rate (UNRATE) is -0.58. This value indicates a moderate negative linear relationship between the two variables.\nThe negative sign indicates that as GDP increases, the unemployment rate tends to decrease, and vice versa. The magnitude of -0.58 suggests that the relationship is significant."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#correlation-analysis-2",
+    "href": "tsa_ayesheep_milindra.html#correlation-analysis-2",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Correlation Analysis",
+    "text": "Correlation Analysis\n\nNow, Let us analyze the CCF plot:"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#correlation-analysis-3",
+    "href": "tsa_ayesheep_milindra.html#correlation-analysis-3",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Correlation Analysis",
+    "text": "Correlation Analysis\n\nCCF plot shows the correlation between the two time series at different lags. A significant peak at lag -1 indicates a strong relationship between GDP and the unemployment rate at a lag of one time period.\nIt indicates that changes in GDP in the current period are associated with changes in the Unemployment Rate in the previous period."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-time-series-analysis",
+    "href": "tsa_ayesheep_milindra.html#gdp-time-series-analysis",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: Time Series Analysis",
+    "text": "GDP: Time Series Analysis\n\n\nThe seasonal component in the decomposition plot shows that there is strong seasonality in the data, as the peaks and troughs repeat at consistent intervals. Let’s lot ACF and PACF to determine stationarity and order of the data."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-acf-plot",
+    "href": "tsa_ayesheep_milindra.html#gdp-acf-plot",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: ACF Plot",
+    "text": "GDP: ACF Plot"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-acf-plot-analysis",
+    "href": "tsa_ayesheep_milindra.html#gdp-acf-plot-analysis",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: ACF Plot Analysis:",
+    "text": "GDP: ACF Plot Analysis:\n\nThe plot displays a rapid decay in the ACF values from lag 0, where it starts at 1 showing a perfect positive autocorrelation with itself. T\nThe subsequent lags, suggest that the immediate past has a strong positive autocorrelation with the present, which quickly diminishes as the lag increases.\nSince none of the bars extend beyond the significance bounds after lag 0, it indicates that there are no significant auto correlations at higher lags, which suggests that any autoregressive component would be of a very short memory."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-pacf-plot",
+    "href": "tsa_ayesheep_milindra.html#gdp-pacf-plot",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: PACF Plot",
+    "text": "GDP: PACF Plot"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-pacf-analysis",
+    "href": "tsa_ayesheep_milindra.html#gdp-pacf-analysis",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: PACF Analysis",
+    "text": "GDP: PACF Analysis\n\nThe PACF plot suggests little partial autocorrelation at the lags examined, indicating that a lower order autoregressive term may be sufficient for modeling this time series data."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-adf-test",
+    "href": "tsa_ayesheep_milindra.html#gdp-adf-test",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: ADF Test",
+    "text": "GDP: ADF Test\n\n\n\n    Augmented Dickey-Fuller Test\n\ndata:  ts_gdp\nDickey-Fuller = -6.4106, Lag order = 9, p-value = 0.01\nalternative hypothesis: stationary\n\n\n\nSmall p-value suggests stationary data."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-time-series-analysis",
+    "href": "tsa_ayesheep_milindra.html#unrate-time-series-analysis",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: Time Series Analysis",
+    "text": "UNRATE: Time Series Analysis\n\n\nThis dataset also shows similar seasonality."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-acf-plot",
+    "href": "tsa_ayesheep_milindra.html#unrate-acf-plot",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: ACF Plot",
+    "text": "UNRATE: ACF Plot\n\n\nThe coefficients start high and slowly decrease as the lags increase, but they remain positive and slowly taper off, suggesting a gradual decline in correlation with increasing lag. This type of ACF pattern is indicative an MA(q) model will be appropriate for the data."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-pacf-plot",
+    "href": "tsa_ayesheep_milindra.html#unrate-pacf-plot",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: PACF Plot",
+    "text": "UNRATE: PACF Plot\n\n\nMost of the partial autocorrelation coefficients are within the confidence bounds.This suggests that there is little autocorrelation at any lag beyond the immediate past, indicating that an AR(p) model with lower order will be sufficient."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-adf-test",
+    "href": "tsa_ayesheep_milindra.html#unrate-adf-test",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: ADF Test",
+    "text": "UNRATE: ADF Test\n\n\n\n    Augmented Dickey-Fuller Test\n\ndata:  ts_unemp\nDickey-Fuller = -3.2133, Lag order = 9, p-value = 0.08563\nalternative hypothesis: stationary\n\n\n\nAgain, a small p-value indicates stationarity in data."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-covid-period",
+    "href": "tsa_ayesheep_milindra.html#gdp-covid-period",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: COVID Period",
+    "text": "GDP: COVID Period"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-before-imputing",
+    "href": "tsa_ayesheep_milindra.html#gdp-before-imputing",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: Before Imputing",
+    "text": "GDP: Before Imputing\n\nSetting COVID range to NA"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-smoothing-the-covid-period",
+    "href": "tsa_ayesheep_milindra.html#gdp-smoothing-the-covid-period",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: Smoothing the Covid period",
+    "text": "GDP: Smoothing the Covid period"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#gdp-before-vs-after-smoothing",
+    "href": "tsa_ayesheep_milindra.html#gdp-before-vs-after-smoothing",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "GDP: Before vs After Smoothing",
+    "text": "GDP: Before vs After Smoothing"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-covid-period",
+    "href": "tsa_ayesheep_milindra.html#unrate-covid-period",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: COVID Period",
+    "text": "UNRATE: COVID Period"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-before-imputing",
+    "href": "tsa_ayesheep_milindra.html#unrate-before-imputing",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: Before Imputing",
+    "text": "UNRATE: Before Imputing\n\nSetting COVID range to NA"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-smoothing-the-covid-period",
+    "href": "tsa_ayesheep_milindra.html#unrate-smoothing-the-covid-period",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: Smoothing the COVID Period",
+    "text": "UNRATE: Smoothing the COVID Period"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#unrate-before-vs-after-smoothing",
+    "href": "tsa_ayesheep_milindra.html#unrate-before-vs-after-smoothing",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "UNRATE: Before vs After Smoothing",
+    "text": "UNRATE: Before vs After Smoothing"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#arima-model",
+    "href": "tsa_ayesheep_milindra.html#arima-model",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "ARIMA Model",
+    "text": "ARIMA Model\n\n\nSeries: ts_gdp_new \nRegression with ARIMA(3,0,2)(2,0,1)[12] errors \n\nCoefficients:\n         ar1      ar2     ar3      ma1     ma2    sar1     sar2     sma1\n      2.5754  -2.2374  0.6550  -0.6951  0.3336  0.1742  -0.3452  -0.1641\ns.e.  0.0587   0.1129  0.0556   0.0611  0.0382  0.1100   0.0371   0.1181\n      intercept     xreg\n       100.3003  -0.0425\ns.e.     0.1174   0.0074\n\nsigma^2 = 0.00213:  log likelihood = 1264.88\nAIC=-2507.76   AICc=-2507.41   BIC=-2456.73\n\nTraining set error measures:\n                        ME       RMSE        MAE           MPE       MAPE\nTraining set -0.0001176572 0.04585285 0.02223068 -0.0001553151 0.02221254\n                  MASE       ACF1\nTraining set 0.0222762 0.01006153"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#arima-summary",
+    "href": "tsa_ayesheep_milindra.html#arima-summary",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "ARIMA Summary",
+    "text": "ARIMA Summary\n\nARIMA model has been fitted to the ts_gdp_new time series data. The model includes an external regressor, unemployment data (xreg), and is structured with both non-seasonal and seasonal components.\nARIMA(3,0,2)(2,0,1)[12], indicates a non-seasonal component with 3 AR terms and 2 MA terms, alongside a seasonal component with 2 seasonal AR terms and 1 seasonal MA term with a period of 12, i.e. for monthly data.\nThe summary shows a goot fit of the model to the data, with a high value of log likelihood and low value of training set error. The AICC and BICC values are also quite low."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#regresion-equation",
+    "href": "tsa_ayesheep_milindra.html#regresion-equation",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Regresion Equation",
+    "text": "Regresion Equation\nyt = β0 + β1zt + xt\nWhere:\n\nβ0 is the intercept term (100.3003)\nβ1 is the coefficient for the covariate series (z_t, -0.0425)\nxt represents the ARIMA(3,0,2)(2,0,1)[12] error terms."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#regression-equation",
+    "href": "tsa_ayesheep_milindra.html#regression-equation",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Regression Equation",
+    "text": "Regression Equation\nxt = ϕ1xt – 1 + ϕ2xt – 2 + ϕ3xt – 3 − θ1ϵt − 1 − θ2ϵt − 2 + Φ1Xt − 12 + Φ2Xt − 24 − Θ1Et − 12 + ϵt\nWith the coefficients from your ARIMA model summary:\n\nϕ1=2.5754; ϕ2=−2.2374; ϕ3=0.6550\nθ1=−0.6951; θ2=0.3336\nΦ1=0.1742; Φ2=−0.3452\nΘ1=−0.1641\nϵt is the error at time t."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#forecast-arima-model",
+    "href": "tsa_ayesheep_milindra.html#forecast-arima-model",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Forecast: ARIMA Model",
+    "text": "Forecast: ARIMA Model\n\n\nForecasted Value for GDP: 100.0611"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#vector-autoregression-var-model",
+    "href": "tsa_ayesheep_milindra.html#vector-autoregression-var-model",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Vector AutoRegression (VAR) Model",
+    "text": "Vector AutoRegression (VAR) Model\n\n\n\nVAR Estimation Results:\n========================= \nEndogenous variables: Y1, Y2 \nDeterministic variables: const \nSample size: 763 \nLog Likelihood: 701.94 \nRoots of the characteristic polynomial:\n0.9927 0.9927\nCall:\nVAR(y = ts_data, type = \"const\", ic = \"AIC\")\n\n\nEstimation results for equation Y1: \n=================================== \nY1 = Y1.l1 + Y2.l1 + const \n\n       Estimate Std. Error t value Pr(&gt;|t|)    \nY1.l1  0.999630   0.005625 177.722  &lt; 2e-16 ***\nY2.l1  0.011509   0.003940   2.921  0.00359 ** \nconst -0.031372   0.575376  -0.055  0.95653    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\nResidual standard error: 0.1496 on 760 degrees of freedom\nMultiple R-Squared: 0.9828, Adjusted R-squared: 0.9828 \nF-statistic: 2.176e+04 on 2 and 760 DF,  p-value: &lt; 2.2e-16 \n\n\nEstimation results for equation Y2: \n=================================== \nY2 = Y1.l1 + Y2.l1 + const \n\n       Estimate Std. Error t value Pr(&gt;|t|)    \nY1.l1 -0.025480   0.006612  -3.854 0.000126 ***\nY2.l1  0.985443   0.004631 212.786  &lt; 2e-16 ***\nconst  2.632333   0.676378   3.892 0.000108 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\nResidual standard error: 0.1758 on 760 degrees of freedom\nMultiple R-Squared: 0.9884, Adjusted R-squared: 0.9884 \nF-statistic: 3.237e+04 on 2 and 760 DF,  p-value: &lt; 2.2e-16 \n\n\n\nCovariance matrix of residuals:\n         Y1       Y2\nY1  0.02237 -0.01194\nY2 -0.01194  0.03091\n\nCorrelation matrix of residuals:\n        Y1      Y2\nY1  1.0000 -0.4541\nY2 -0.4541  1.0000"
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#var-model-summary",
+    "href": "tsa_ayesheep_milindra.html#var-model-summary",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "VAR Model Summary",
+    "text": "VAR Model Summary\n\nVAR is a multivariate statistical model used to capture the linear interdependencies among multiple time series.\nVAR model with a constant term has been estimated with a high degree of fit for the time series data. Both endogenous variables are significantly influenced by their own first lags and slightly by each other, where Y1 and Y2 are showing a negative contemporaneous relationship. The model is well-specified, explaining a large proportion of the variance in the data, which is indicated by the high Multiple R - Square value for the estimates of Y1 and Y2."
+  },
+  {
+    "objectID": "tsa_ayesheep_milindra.html#forecast-var",
+    "href": "tsa_ayesheep_milindra.html#forecast-var",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "Forecast: VAR",
+    "text": "Forecast: VAR\n\n\nForecasted Value for GDP: 100.2626 \n\n\nForecasted Value for Unemployment: 3.821666"
+  }
+]

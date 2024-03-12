@@ -1,0 +1,525 @@
+---
+title: "GDP Analysis w.r.t. Unemployment"
+subtitle: "Milind and Ayeshee"
+format:
+  revealjs
+editor: visual
+---
+
+## Introduction
+
+-   <div>
+
+    Forecast the GDP in USA by using Unemployment rate data and Leading Indicators of GDP data, and analyzing the relationship between GDP and Unemployment rate.
+
+    </div>
+
+## Dataset Overview
+
+-   The Leading Indicators OECD dataset provides a normalized GDP series for the United States, which is useful for analyzing trends and forecasting future economic conditions.
+
+-   The unemployment rate is another critical economic indicator that measures the percentage of the labor force that is unemployed and actively seeking employment.
+
+```{r}
+library(reprex)
+library(forecast)
+library(readr)
+library(lubridate)
+library(fredr)
+library(tseries)
+library(tidyverse)
+library(ggplot2)
+library(zoo)
+library(xts)
+library(KFAS)
+library(MARSS)
+library(dplyr)
+library(stats)
+library(corrplot)
+library(imputeTS)
+library(knitr)
+library(vars)
+fredr_set_key('48753a49458ab78ef7185cffd58175b6')
+```
+
+## Leading Indicators OECD: Reference Series: Gross Domestic Product (GDP)
+
+```{r}
+gdp_data <- fredr(series_id = 'USALORSGPNOSTSAM')
+gdp_data$date <- as.Date(gdp_data$date)
+kable(head(gdp_data, 3), format = "html", caption = "GDP Data (First 3 Rows)", row.names = TRUE,
+      col.names = c("Date", "Series ID", "Value", "Realtime Start", "Realtime End"))
+```
+
+## Unemployment Rate (UNRATE)
+
+```{r}
+unemp_data <- fredr(series_id = 'UNRATE')
+unemp_data$date <- as.Date(unemp_data$date)
+kable(head(unemp_data, 3), format = "html", caption = "Unemployment Data (First 3 Rows)", row.names = TRUE,
+      col.names = c("Date", "Series ID", "Value", "Realtime Start", "Realtime End"))
+```
+
+## Data Filtering
+
+We see that the time period for both datasets is not overlapping. We can overlap the time period by taking a subset of data from each series, with common start and end date.
+
+```{r}
+gdp_data <- subset(gdp_data, date >= '1960-01-01')
+head(gdp_data, n = 3)
+tail(gdp_data, n = 3)
+```
+
+## Data Filtering
+
+```{r}
+unemp_data <- subset(unemp_data, date >= '1960-01-01' & date <= '2023-08-01')
+head(unemp_data, n = 3)
+tail(unemp_data, n = 3)
+```
+
+## Data Visualization
+
+Let's see a plot of the Lead Indicators of GDP dataset, to know how the value is changing with time:
+
+```{r plot1, fig.cap="GDP Data", echo=FALSE}
+ggplot(gdp_data, aes(x = date, y = value)) +
+  geom_line() +
+  labs(title = "Leading Indicators OECD: Reference Series: Gross Domestic Product (GDP)",
+       x = "Date",
+       y = "Percentage Change")
+```
+
+## Data Visualization
+
+Similarly, let's see a similar plot of the Unemployment rate:
+
+```{r}
+ggplot(unemp_data, aes(x = date, y = value)) +
+  geom_line() +
+  labs(title = "Unemployment Rate",
+       x = "Date",
+       y = "Percentage Change")
+```
+
+## Correlation Analysis
+
+-   Correlation between Gross Domestic Product (GDP) and the Unemployment Rate to gain insights into economic dynamics of how the changes in unemployment impacts the GDP.
+
+-   Two evaluation metrics: Correlation coefficient and Cross-Correlation Function (CCF) plot
+
+```{r}
+corr <- cor(gdp_data$value, unemp_data$value, use = "complete.obs")
+cat("The correlation value obtained is:", corr)
+```
+
+## Correlation Analysis
+
+-   The correlation coefficient between GDP and the Unemployment Rate (UNRATE) is -0.58. This value indicates a moderate negative linear relationship between the two variables.
+
+-   The negative sign indicates that as GDP increases, the unemployment rate tends to decrease, and vice versa. The magnitude of -0.58 suggests that the relationship is significant.
+
+## Correlation Analysis
+
+-   Now, Let us analyze the CCF plot:
+
+```{r}
+ccf(gdp_data$value, unemp_data$value, lag.max = 15, main = "CCF between GDP and UNRATE")
+```
+
+## Correlation Analysis
+
+-   CCF plot shows the correlation between the two time series at different lags. A significant peak at lag -1 indicates a strong relationship between GDP and the unemployment rate at a lag of one time period.
+
+-   It indicates that changes in GDP in the current period are associated with changes in the Unemployment Rate in the previous period.
+
+## GDP: Time Series Analysis
+
+```{r}
+ts_gdp = ts(gdp_data$value, frequency = 12)
+plot(stl(ts_gdp, s.window="periodic"))
+```
+
+-   The seasonal component in the decomposition plot shows that there is strong seasonality in the data, as the peaks and troughs repeat at consistent intervals. Let's lot ACF and PACF to determine stationarity and order of the data.
+
+## GDP: ACF Plot
+
+```{r}
+acf(ts_gdp)
+```
+
+## GDP: ACF Plot Analysis:
+
+-   The plot displays a rapid decay in the ACF values from lag 0, where it starts at 1 showing a perfect positive autocorrelation with itself. T
+
+-   The subsequent lags, suggest that the immediate past has a strong positive autocorrelation with the present, which quickly diminishes as the lag increases.
+
+-   Since none of the bars extend beyond the significance bounds after lag 0, it indicates that there are no significant auto correlations at higher lags, which suggests that any autoregressive component would be of a very short memory.
+
+## GDP: PACF Plot
+
+```{r}
+pacf(ts_gdp)
+```
+
+## GDP: PACF Analysis
+
+-   The PACF plot suggests little partial autocorrelation at the lags examined, indicating that a lower order autoregressive term may be sufficient for modeling this time series data.
+
+## GDP: ADF Test
+
+```{r}
+adf.test(ts_gdp, alternative = "stationary")
+```
+
+-   Small p-value suggests stationary data.
+
+## UNRATE: Time Series Analysis
+
+```{r}
+ts_unemp = ts(unemp_data$value, frequency = 12)
+plot(stl(ts_unemp, s.window="periodic"))
+```
+
+-   This dataset also shows similar seasonality.
+
+## UNRATE: ACF Plot
+
+```{r}
+acf(ts_unemp)
+```
+
+-   The coefficients start high and slowly decrease as the lags increase, but they remain positive and slowly taper off, suggesting a gradual decline in correlation with increasing lag. This type of ACF pattern is indicative an MA(q) model will be appropriate for the data.
+
+## UNRATE: PACF Plot
+
+```{r}
+pacf(ts_unemp)
+```
+
+-   Most of the partial autocorrelation coefficients are within the confidence bounds.This suggests that there is little autocorrelation at any lag beyond the immediate past, indicating that an AR(p) model with lower order will be sufficient.
+
+## UNRATE: ADF Test
+
+```{r}
+adf.test(ts_unemp, alternative = "stationary")
+```
+
+-   Again, a small p-value indicates stationarity in data.
+
+## GDP: COVID Period
+
+```{r}
+covid_start <- as.Date("2020-01-01")
+covid_end <- as.Date("2021-12-31")
+```
+
+```{r}
+plot(gdp_data$date, gdp_data$value, type = "l", main = "Gross Domestic Product (GDP)", xlab = "Year", ylab = "Number")
+abline(v = as.numeric(covid_start), col = "red", lty = 2)
+abline(v = as.numeric(covid_end), col = "red", lty = 2)
+```
+
+```{r}
+# filter out the covid-19 period data
+covid_period_data <- subset(gdp_data, date >= covid_start & date <= covid_end)
+data_without_covid <- subset(gdp_data, date < covid_start | date > covid_end)
+
+# Set values between Covid start and end date to NA
+old_gdp_data <- gdp_data
+gdp_data$value[gdp_data$date >= covid_start & gdp_data$date <= covid_end] <- NA
+```
+
+## GDP: Before Imputing
+-   Setting COVID range to NA
+
+```{r}
+ggplot(gdp_data, aes(x = date, y = value)) +
+  geom_line() +
+  labs(title = "GDP With NA",
+       x = "Date",
+       y = "Percentage Change")
+```
+
+```{r}
+spar_values <- seq(0.1, 1, by = 0.1)
+
+for (spar in spar_values) {
+  # fit the spline on our data
+  spline_fit  <- smooth.spline(x = as.numeric(data_without_covid$date), y = data_without_covid$value, spar = spar, tol = 1e-6)
+  
+  # Impute the new values using the spline fit
+  imputed_data <- predict(spline_fit, x = as.numeric(covid_period_data$date))$y
+  
+  # Update Covid period data with imputed values
+  covid_period_data$value <- imputed_data
+  # Update the data with new predicted values
+  updated_data <- rbind(data_without_covid, covid_period_data)
+  updated_data <- updated_data %>% arrange(date)
+  
+  # Plot updated data
+  plot(updated_data$date, updated_data$value, type = "l", col = "red", lwd = 2,
+       main = paste("Smoothened Time Series (spar =", spar, ")"), xlab = "Year", ylab = "Number")
+  
+  ggplot(updated_data, aes(x = date, y = value)) +
+    geom_line() +
+    labs(title = "Smoothened Time Series (spar =", spar, ")",
+         x = "Date",
+         y = "Percentage Change")
+  
+  
+  lines(unemp_data$date, unemp_data$value, col = "black", lwd = 2)
+  legend("topleft", legend = c("Updated", "Original"), col = c("red", "black"), lty = 1, lwd = 2)
+}
+```
+
+## GDP: Smoothing the Covid period
+
+```{r}
+spline_fit_covid <- smooth.spline(x = as.numeric(data_without_covid$date), y = data_without_covid$value, spar = 0.8, tol = 1e-6)
+imputed_values <- predict(spline_fit_covid, x = as.numeric(covid_period_data$date))$y
+covid_period_data$value <- imputed_values
+updated_gdp_data <- rbind(data_without_covid, covid_period_data)
+updated_gdp_data <- updated_gdp_data %>% arrange(date)
+
+plot(updated_gdp_data$date, updated_gdp_data$value, type = "l", col = "red", lwd = 2,
+           main = "Updated TS Vs Original TS", xlab = "Year", ylab = "Number")
+lines(gdp_data$date, gdp_data$value, col = "black", lwd = 2)
+legend("topright", legend = c("Updated", "Original"), col = c("red", "black"), lty = 1, lwd = 2)
+
+```
+
+## GDP: Before vs After Smoothing
+
+```{r}
+ts_gdp_old <- ts(old_gdp_data$value, frequency = 12)
+ts_gdp_new <- ts(updated_gdp_data$value, frequency = 12)
+
+plot(ts_gdp_old, col = "black", main = "Comparison of Time Series", ylab = "Value")
+lines(ts_gdp_new, col = "red")
+legend("topright", legend = c("Original", "Updated"), col = c("black", "red"), lty = 1, lwd = 2)
+
+```
+
+## UNRATE: COVID Period
+
+```{r}
+# Series 2: Plot highlighting the covid period in our dataset 
+plot(unemp_data$date, unemp_data$value, type = "l", main = "Unemployment Rate", xlab = "Year", ylab = "Number")
+abline(v = as.numeric(covid_start), col = "red", lty = 2)
+abline(v = as.numeric(covid_end), col = "red", lty = 2)
+```
+
+## UNRATE: Before Imputing
+-   Setting COVID range to NA
+
+```{r}
+# filter out the covid-19 period data
+covid_period_data <- subset(unemp_data, date >= covid_start & date <= covid_end)
+data_without_covid <- subset(unemp_data, date < covid_start | date > covid_end)
+
+# Set values between Covid start and end date to NA
+old_unemp_data <- unemp_data
+unemp_data$value[unemp_data$date >= covid_start & unemp_data$date <= covid_end] <- NA
+
+# Plot data with NA values
+ggplot(unemp_data, aes(x = date, y = value)) +
+  geom_line() +
+  labs(title = "Unemployment Rate (unemp)",
+       x = "Date",
+       y = "Percentage Change")
+
+
+```
+
+```{r}
+spar_values <- seq(0.1, 1, by = 0.1)
+
+for (spar in spar_values) {
+  # fit the spline on our data
+  spline_fit  <- smooth.spline(x = as.numeric(data_without_covid$date), y = data_without_covid$value, spar = spar, tol = 1e-6)
+  
+  # Impute the new values using the spline fit
+  imputed_data <- predict(spline_fit, x = as.numeric(covid_period_data$date))$y
+  
+  # Update Covid period data with imputed values
+  covid_period_data$value <- imputed_data
+  # Update the data with new predicted values
+  updated_data <- rbind(data_without_covid, covid_period_data)
+  updated_data <- updated_data %>% arrange(date)
+  
+  # Plot updated data
+  plot(updated_data$date, updated_data$value, type = "l", col = "red", lwd = 2,
+       main = paste("Smoothened Time Series (spar =", spar, ")"), xlab = "Year", ylab = "Number")
+  
+  ggplot(updated_data, aes(x = date, y = value)) +
+    geom_line() +
+    labs(title = "Smoothened Time Series (spar =", spar, ")",
+         x = "Date",
+         y = "Percentage Change")
+  
+  
+  lines(unemp_data$date, unemp_data$value, col = "black", lwd = 2)
+  legend("topleft", legend = c("Updated", "Original"), col = c("red", "black"), lty = 1, lwd = 2)
+}
+
+```
+
+## UNRATE: Smoothing the COVID Period
+
+```{r}
+spline_fit_covid <- smooth.spline(x = as.numeric(data_without_covid$date), y = data_without_covid$value, spar = 1, tol = 1e-6)
+imputed_values <- predict(spline_fit_covid, x = as.numeric(covid_period_data$date))$y
+covid_period_data$value <- imputed_values
+updated_unemp_data <- rbind(data_without_covid, covid_period_data)
+updated_unemp_data <- updated_unemp_data %>% arrange(date)
+
+plot(updated_unemp_data$date, updated_unemp_data$value, type = "l", col = "red", lwd = 2,
+     main = "Updated TS Vs Original TS", xlab = "Year", ylab = "Number")
+lines(unemp_data$date, unemp_data$value, col = "black", lwd = 2)
+legend("topright", legend = c("Updated", "Original"), col = c("red", "black"), lty = 1, lwd = 2)
+```
+
+## UNRATE: Before vs After Smoothing
+
+```{r}
+
+ts_unemp_old <- ts(old_unemp_data$value, frequency = 12)
+ts_unemp_new <- ts(updated_unemp_data$value, frequency = 12)
+
+plot(ts_unemp_old, col = "black", main = "Comparison of Time Series", ylab = "Value")
+lines(ts_unemp_new, col = "red")
+legend("topright", legend = c("Original", "Updated"), col = c("black", "red"), lty = 1, lwd = 2)
+
+```
+
+```{r}
+p_values <- 1:3
+q_values <- 1:3
+P_values <- 1:2
+Q_values <- 1:2
+
+# initialize aic and order
+top_aic <- Inf
+top_order <- c(1, 0, 0)
+top_seasonal_order <- c(1, 0, 0)
+
+# iterate
+for (p in p_values) {
+  for (q in q_values) {
+    for (P in P_values) {
+      for (Q in Q_values) {
+        curr_order <- c(p, 0, q)
+        seasonal_order <- list(order = c(P, 0, Q), period = 12)
+        curr_model <- Arima(ts_gdp_new, xreg = ts_unemp_new, order=curr_order, seasonal = seasonal_order)
+        curr_aic <- AIC(curr_model)
+        if (curr_aic < top_aic) {
+          # new top order found, overwrite
+          top_aic <- curr_aic
+          top_order <- curr_order
+          top_seasonal_order <- seasonal_order
+        }
+      }
+    }
+  }
+}
+
+```
+
+## ARIMA Model
+
+```{r}
+arima_model <- Arima(ts_gdp_new, xreg = ts_unemp_new, order=top_order, seasonal = top_seasonal_order)
+summary(arima_model)
+```
+
+## ARIMA Summary
+- ARIMA model has been fitted to the ts_gdp_new time series data. The model includes an external regressor, unemployment data (xreg), and is structured with both non-seasonal and seasonal components.
+
+-  ARIMA(3,0,2)(2,0,1)[12], indicates a non-seasonal component with 3 AR terms and 2 MA terms, alongside a seasonal component with 2 seasonal AR terms and 1 seasonal MA term with a period of 12, i.e. for monthly data.
+
+- The summary shows a goot fit of the model to the data, with a high value of log likelihood and low value of training set error. The AICC and BICC values are also quite low.
+
+## Regresion Equation
+
+### yt = β0 + β1zt + xt
+
+Where:
+
+-   β0 is the intercept term (100.3003)
+
+-   β1 is the coefficient for the covariate series (z_t, -0.0425)
+
+-   xt represents the ARIMA(3,0,2)(2,0,1)\[12\] error terms.
+
+## Regression Equation
+
+##### xt = ϕ1xt – 1 + ϕ2xt – 2 + ϕ3xt – 3 − θ1ϵt − 1 − θ2ϵt − 2 + Φ1Xt − 12 + Φ2Xt − 24 − Θ1Et − 12 + ϵt
+
+With the coefficients from your ARIMA model summary:
+
+-   ϕ1=2.5754; ϕ2=−2.2374; ϕ3=0.6550
+
+-   θ1=−0.6951; θ2=0.3336
+
+-   Φ1=0.1742; Φ2=−0.3452
+
+-   Θ1=−0.1641
+
+-   ϵt is the error at time t.
+
+## Forecast: ARIMA Model
+
+```{r}
+forecast_arima <- forecast(arima_model, xreg = ts_unemp_new, h = 1)
+forecast_mean <- mean(forecast_arima$mean)
+cat("Forecasted Value for GDP:", forecast_mean, "\n")
+```
+
+## Vector AutoRegression (VAR) Model
+
+```{r}
+# merged ts for VAR
+ts_data <- ts(data.frame(Y1 = ts_gdp_new, Y2 = ts_unemp_new), frequency = 12)
+
+# Fit a VAR model
+var_model <- VAR(ts_data, type = "const", ic = "AIC")
+summary(var_model)
+```
+
+## VAR Model Summary
+
+- VAR is a multivariate statistical model used to capture the linear interdependencies among multiple time series.
+
+- VAR model with a constant term has been estimated with a high degree of fit for the time series data. Both endogenous variables are significantly influenced by their own first lags and slightly by each other, where Y1 and Y2 are showing a negative contemporaneous relationship. The model is well-specified, explaining a large proportion of the variance in the data, which is indicated by the high Multiple R - Square value for the estimates of Y1 and Y2.
+
+## Forecast: VAR
+
+```{r}
+# Forecast the value for VAR Model
+forecast_var <- forecast(var_model, h =1)
+forecast_y1 <- mean(forecast_var$forecast$Y1$mean)
+cat("Forecasted Value for GDP:", forecast_y1, "\n")
+forecast_y2 <-mean(forecast_var$forecast$Y2$mean)
+cat("Forecasted Value for Unemployment:", forecast_y2, "\n")
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
