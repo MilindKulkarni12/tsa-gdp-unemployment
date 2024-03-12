@@ -433,6 +433,12 @@ arima_model <- Arima(ts_gdp_new, xreg = ts_unemp_new, order=top_order, seasonal 
 summary(arima_model)
 ```
 
+## ARIMA: Residual Analysis
+
+```{r}
+checkresiduals(arima_model)
+```
+
 ## ARIMA Summary
 - ARIMA model has been fitted to the ts_gdp_new time series data. The model includes an external regressor, unemployment data (xreg), and is structured with both non-seasonal and seasonal components.
 

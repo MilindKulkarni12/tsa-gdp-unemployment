@@ -217,6 +217,13 @@
     "text": "ARIMA Model\n\n\nSeries: ts_gdp_new \nRegression with ARIMA(3,0,2)(2,0,1)[12] errors \n\nCoefficients:\n         ar1      ar2     ar3      ma1     ma2    sar1     sar2     sma1\n      2.5754  -2.2374  0.6550  -0.6951  0.3336  0.1742  -0.3452  -0.1641\ns.e.  0.0587   0.1129  0.0556   0.0611  0.0382  0.1100   0.0371   0.1181\n      intercept     xreg\n       100.3003  -0.0425\ns.e.     0.1174   0.0074\n\nsigma^2 = 0.00213:  log likelihood = 1264.88\nAIC=-2507.76   AICc=-2507.41   BIC=-2456.73\n\nTraining set error measures:\n                        ME       RMSE        MAE           MPE       MAPE\nTraining set -0.0001176572 0.04585285 0.02223068 -0.0001553151 0.02221254\n                  MASE       ACF1\nTraining set 0.0222762 0.01006153"
   },
   {
+    "objectID": "tsa_ayesheep_milindra.html#arima-residual-analysis",
+    "href": "tsa_ayesheep_milindra.html#arima-residual-analysis",
+    "title": "GDP Analysis w.r.t. Unemployment",
+    "section": "ARIMA: Residual Analysis",
+    "text": "ARIMA: Residual Analysis\n\n\n\n\n    Ljung-Box test\n\ndata:  Residuals from Regression with ARIMA(3,0,2)(2,0,1)[12] errors\nQ* = 7.1261, df = 16, p-value = 0.9708\n\nModel df: 8.   Total lags used: 24"
+  },
+  {
     "objectID": "tsa_ayesheep_milindra.html#arima-summary",
     "href": "tsa_ayesheep_milindra.html#arima-summary",
     "title": "GDP Analysis w.r.t. Unemployment",
