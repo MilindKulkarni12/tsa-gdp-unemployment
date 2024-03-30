@@ -2,7 +2,7 @@
 -   Forecast the GDP in USA by using Unemployment rate data and Leading Indicators of GDP data, and analyzing the relationship between GDP and Unemployment rate.
 ## Team Members
 * Ayeshee Patra
-* Milind Kulkarni
+* Milind Rajendra Kulkarni
 
 ## Datasets
 * **Leading Indicators OECD: Reference Series: Gross Domestic Product (GDP):** ([USALORSGPNOSTSAM](https://fred.stlouisfed.org/series/USALORSGPNOSTSAM)) : This dataset provides a normalized GDP series for the United States, which is useful for analyzing trends and forecasting future economic conditions.
